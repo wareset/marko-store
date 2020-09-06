@@ -1,2 +1,3 @@
 # marko-store
-Reactive store for marko-js
+
+Reactive store for marko-js like svelte/store

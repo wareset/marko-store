@@ -1,0 +1,25 @@
+{
+  "name": "marko-store",
+  "version": "0.0.1",
+  "description": "Reactive store for marko-js like svelte/store",
+  "main": "index.js",
+  "repository": "https://github.com/wareset/marko-store.git",
+  "author": "wareset <git@wareset.com>",
+  "license": "MIT",
+  "files": [
+    "index.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "marko-js",
+    "reactive",
+    "store"
+  ],
+  "peerDependencies": {
+    "marko": "4.x"
+  },
+  "dependencies": {
+    "@wareset/store": "^0.0.2"
+  }
+}
