@@ -83,15 +83,9 @@ module.exports = function store(component, ...args) {
   const _methods = { set, update, watcher, watch, bridge };
   Object.keys(_methods).forEach(method => {
     SET_AND_WATCH_METHODS.forEach((v, k) => {
-      _methods[method][v] = !k ? store[method] : store[`${method}${v}`];
+      store[method][v] = !k ? store[method] : store[`${method}${v}`];
     });
   });
-
-  // (set.Weak = store.setWeak), (set.Sure = store.setSure);
-  // (update.Weak = store.updateWeak), (update.Sure = store.updateSure);
-  // (watcher.Weak = store.watcherWeak), (watcher.Sure = store.watcherSure);
-  // (watch.Weak = store.watchWeak), (watch.Sure = store.watchSure);
-  // (bridge.Weak = store.bridgeWeak), (bridge.Sure = store.bridgeSure);
 
   if (type === 2) autosubscribe(store, component, components);
 
