@@ -1,4 +1,5 @@
 const waresetStore = require('@wareset/store');
+const { SET_AND_WATCH_METHODS } = require('@wareset/store/lib/consts.js');
 
 function check_component(components, component, args) {
   if (!component || !component.elId || component.elId !== component.getElId) {
@@ -29,27 +30,70 @@ module.exports = function store(component, ...args) {
   const components = [];
 
   const type = check_component(components, component, args);
-  const Observer = waresetStore(...args);
+  const store = waresetStore(...args);
 
-  const { subscribe, set, update } = Observer;
+  const {
+    subscribe,
+    set,
+    setWeak,
+    setSure,
+    update,
+    updateWeak,
+    updateSure,
+    watcher,
+    watcherWeak,
+    watcherSure,
+    unwatcher,
+    watch,
+    watchWeak,
+    watchSure,
+    unwatch,
+    bridge,
+    bridgeWeak,
+    bridgeSure,
+    unbridge
+  } = store;
 
-  const methods = { subscribe, set, update };
+  const methods = {
+    subscribe,
+    ...{ set, setWeak, setSure },
+    ...{ update, updateWeak, updateSure },
+    ...{ watcher, watcherWeak, watcherSure },
+    unwatcher,
+    ...{ watch, watchWeak, watchSure },
+    unwatch,
+    ...{ bridge, bridgeWeak, bridgeSure },
+    unbridge
+  };
   Object.keys(methods).forEach(key => {
-    Observer[key] = (component, ...args) => {
+    store[key] = (component, ...args) => {
       const type = check_component(components, component, args);
       const result = methods[key](...args);
 
       if (type && methods[key] === subscribe) {
-        if (type === 1) Promise.resolve(() => result());
+        if (type === 1) Promise.resolve().then(() => result());
         else component.on('destroy', () => result());
       }
-      if (type === 2) autosubscribe(Observer, component, components);
+      if (type === 2) autosubscribe(store, component, components);
 
       return result;
     };
   });
 
-  if (type === 2) autosubscribe(Observer, component, components);
+  const _methods = { set, update, watcher, watch, bridge };
+  Object.keys(_methods).forEach(method => {
+    SET_AND_WATCH_METHODS.forEach((v, k) => {
+      _methods[method][v] = !k ? store[method] : store[`${method}${v}`];
+    });
+  });
 
-  return Observer;
+  // (set.Weak = store.setWeak), (set.Sure = store.setSure);
+  // (update.Weak = store.updateWeak), (update.Sure = store.updateSure);
+  // (watcher.Weak = store.watcherWeak), (watcher.Sure = store.watcherSure);
+  // (watch.Weak = store.watchWeak), (watch.Sure = store.watchSure);
+  // (bridge.Weak = store.bridgeWeak), (bridge.Sure = store.bridgeSure);
+
+  if (type === 2) autosubscribe(store, component, components);
+
+  return store;
 };
