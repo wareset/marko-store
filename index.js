@@ -1,5 +1,4 @@
 const waresetStore = require('@wareset/store');
-const { DEFAULT_WEAK_SURE } = require('@wareset/store/lib/consts.js');
 
 function check_component(components, component, args) {
   if (!component || !component.elId || component.elId !== component.getElId) {
@@ -34,44 +33,50 @@ module.exports = function store(component, ...args) {
 
   const {
     subscribe,
+
     set,
     setWeak,
     setSure,
+
     update,
     updateWeak,
     updateSure,
+
+    unobservable,
     observable,
+    observableWeak,
+    observableSure,
+
+    unobserve,
     observe,
+    observeWeak,
+    observeSure,
+
+    undependency,
     dependency,
     dependencyWeak,
     dependencySure,
-    undependency,
-    unobservable,
+
+    undepend,
     depend,
     dependWeak,
     dependSure,
-    undepend,
-    unobserve,
+
+    unbridge,
     bridge,
     bridgeWeak,
-    bridgeSure,
-    unbridge
+    bridgeSure
   } = store;
 
   const methods = {
     subscribe,
     ...{ set, setWeak, setSure },
     ...{ update, updateWeak, updateSure },
-    observable,
-    observe,
-    ...{ dependency, dependencyWeak, dependencySure },
-    undependency,
-    unobservable,
-    ...{ depend, dependWeak, dependSure },
-    undepend,
-    unobserve,
-    ...{ bridge, bridgeWeak, bridgeSure },
-    unbridge
+    ...{ unobservable, observable, observableWeak, observableSure },
+    ...{ unobserve, observe, observeWeak, observeSure },
+    ...{ undependency, dependency, dependencyWeak, dependencySure },
+    ...{ undepend, depend, dependWeak, dependSure },
+    ...{ unbridge, bridge, bridgeWeak, bridgeSure },
   };
   Object.keys(methods).forEach(key => {
     store[key] = (component, ...args) => {
@@ -86,13 +91,6 @@ module.exports = function store(component, ...args) {
 
       return result;
     };
-  });
-
-  const _methods = { set, update, dependency, depend, bridge };
-  Object.keys(_methods).forEach(method => {
-    DEFAULT_WEAK_SURE.forEach((v, k) => {
-      store[method][v] = !k ? store[method] : store[`${method}${v}`];
-    });
   });
 
   if (type === 2) autosubscribe(store, component, components);
