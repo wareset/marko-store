@@ -1,5 +1,5 @@
 const waresetStore = require('@wareset/store');
-const { SET_AND_WATCH_METHODS } = require('@wareset/store/lib/consts.js');
+const { DEFAULT_WEAK_SURE } = require('@wareset/store/lib/consts.js');
 
 function check_component(components, component, args) {
   if (!component || !component.elId || component.elId !== component.getElId) {
@@ -40,14 +40,18 @@ module.exports = function store(component, ...args) {
     update,
     updateWeak,
     updateSure,
-    watcher,
-    watcherWeak,
-    watcherSure,
-    unwatcher,
-    watch,
-    watchWeak,
-    watchSure,
-    unwatch,
+    observable,
+    observe,
+    dependency,
+    dependencyWeak,
+    dependencySure,
+    undependency,
+    unobservable,
+    depend,
+    dependWeak,
+    dependSure,
+    undepend,
+    unobserve,
     bridge,
     bridgeWeak,
     bridgeSure,
@@ -58,10 +62,14 @@ module.exports = function store(component, ...args) {
     subscribe,
     ...{ set, setWeak, setSure },
     ...{ update, updateWeak, updateSure },
-    ...{ watcher, watcherWeak, watcherSure },
-    unwatcher,
-    ...{ watch, watchWeak, watchSure },
-    unwatch,
+    observable,
+    observe,
+    ...{ dependency, dependencyWeak, dependencySure },
+    undependency,
+    unobservable,
+    ...{ depend, dependWeak, dependSure },
+    undepend,
+    unobserve,
     ...{ bridge, bridgeWeak, bridgeSure },
     unbridge
   };
@@ -80,9 +88,9 @@ module.exports = function store(component, ...args) {
     };
   });
 
-  const _methods = { set, update, watcher, watch, bridge };
+  const _methods = { set, update, dependency, depend, bridge };
   Object.keys(_methods).forEach(method => {
-    SET_AND_WATCH_METHODS.forEach((v, k) => {
+    DEFAULT_WEAK_SURE.forEach((v, k) => {
       store[method][v] = !k ? store[method] : store[`${method}${v}`];
     });
   });

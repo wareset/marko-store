@@ -1,6 +1,6 @@
 {
   "name": "marko-store",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "Reactive store for marko-js like svelte/store",
   "main": "index.js",
   "repository": "https://github.com/wareset/marko-store.git",
@@ -20,6 +20,6 @@
     "marko": "4.x"
   },
   "dependencies": {
-    "@wareset/store": "^0.1.5"
+    "@wareset/store": "^0.2.0"
   }
 }
