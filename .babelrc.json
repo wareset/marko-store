@@ -1,0 +1,17 @@
+{
+  "ignore": ["**/*.js"],
+  "plugins": [
+    [
+      "@babel/plugin-transform-modules-commonjs",
+      {
+        "lazy": true
+      }
+    ],
+    [
+      "module-extension",
+      {
+        "mjs": "js"
+      }
+    ]
+  ]
+}

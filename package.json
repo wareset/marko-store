@@ -1,13 +1,14 @@
 {
   "name": "marko-store",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Reactive store for marko-js like svelte/store",
-  "main": "index.js",
   "repository": "https://github.com/wareset/marko-store.git",
   "author": "wareset <git@wareset.com>",
   "license": "MIT",
+  "main": "dist/index",
+  "module": "dist/index.mjs",
   "files": [
-    "index.js",
+    "dist",
     "LICENSE",
     "README.md"
   ],
@@ -16,10 +17,28 @@
     "reactive",
     "store"
   ],
+  "scripts": {
+    "babel:copy": "babel src --out-dir dist --copy-files --keep-file-extension --no-babelrc",
+    "babel:build": "babel dist --out-dir dist --config-file=\"./.babelrc.json\"",
+    "build": "rm -r ./dist && npm run -s babel:copy && npm run -s babel:build",
+    "dev": "npm run -s babel:copy -- --watch | npm run -s babel:build -- --watch",
+    "pkg:name": "cat package.json | grep '\"name\":' | cut -d '\"' -f4",
+    "pkg:version": "cat package.json | grep '\"version\":' | cut -d '\"' -f4",
+    "git:get:tag": "echo v$(npm run -s pkg:version)",
+    "git:set:tag": "t=$(npm run -s git:get:tag) && git tag -a $t -m $t",
+    "git:commit": "npm run build && git add . && read -p 'Commit: ' c; c=${c:-v$(npm run -s pkg:version)} && n=$(npm run -s pkg:name) && git commit -am \"$n: $c\"",
+    "commit": "read -p 'Version [patch]: ' V; V=${V:-patch} && npm version --force --no-git-tag-version $V; echo $V && read -p 'Push? (y/N): ' G && read -p 'Publish? (y/N): ' P && npm run -s git:commit && case $G in Y|y) $(git push);; esac && case $P in Y|y) $(npm run -s git:set:tag && git push --tags && npm -s publish);; esac"
+  },
   "peerDependencies": {
     "marko": "4.x"
   },
   "dependencies": {
-    "@wareset/store": "0.2.5"
+    "@wareset/store": "0.3.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
+    "babel-plugin-module-extension": "^0.1.3"
   }
 }
